@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PASTED.TO - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-2">Admin Panel</h1>
+            <nav class="space-x-6">
+                <a href="/" class="text-purple-400 hover:text-purple-300">Home</a>
+                <a href="#" id="logoutBtn" class="text-red-400 hover:text-red-300">Logout</a>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-6xl mx-auto">
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-2">Total Pastes</h3>
+                    <p class="text-3xl font-bold text-purple-400" id="totalPastes">0</p>
+                </div>
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-2">Banned IPs</h3>
+                    <p class="text-3xl font-bold text-red-400" id="bannedIPs">0</p>
+                </div>
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold mb-2">Today's Pastes</h3>
+                    <p class="text-3xl font-bold text-green-400" id="todayPastes">0</p>
+                </div>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="bg-gray-800 rounded-lg p-6 mb-8">
+                <div class="flex flex-wrap gap-4">
+                    <input type="text" 
+                           id="searchInput" 
+                           placeholder="Search pastes..." 
+                           class="flex-1 bg-gray-700 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <select id="filterStatus" 
+                            class="bg-gray-700 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option value="all">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="deleted">Deleted</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Pastes Table -->
+            <div class="bg-gray-800 rounded-lg p-6 overflow-x-auto">
+                <table class="w-full admin-table">
+                    <thead>
+                        <tr>
+                            <th class="text-left">Title</th>
+                            <th class="text-left">IP Address</th>
+                            <th class="text-left">Date</th>
+                            <th class="text-left">Status</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pastesTableBody">
+                        <!-- Paste entries will be dynamically added here -->
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <div class="flex justify-between items-center mt-6">
+                    <div class="text-sm text-gray-400">
+                        Showing <span id="showingCount">0</span> of <span id="totalCount">0</span> pastes
+                    </div>
+                    <div class="flex space-x-2">
+                        <button id="prevPage" class="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 disabled:opacity-50">
+                            Previous
+                        </button>
+                        <button id="nextPage" class="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 disabled:opacity-50">
+                            Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banned IPs Section -->
+            <div class="bg-gray-800 rounded-lg p-6 mt-8">
+                <h2 class="text-xl font-semibold mb-4">Banned IPs</h2>
+                <div class="flex gap-4 mb-4">
+                    <input type="text" 
+                           id="newIPBan" 
+                           placeholder="Enter IP address..." 
+                           class="flex-1 bg-gray-700 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <button id="addIPBan" 
+                            class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition duration-200">
+                        Ban IP
+                    </button>
+                </div>
+                <div id="bannedIPsList" class="space-y-2">
+                    <!-- Banned IPs will be dynamically added here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/admin.js"></script>
+</body>
+</html>
