@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PASTED.TO - View Paste</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-2">PASTED.TO</h1>
+            <nav class="space-x-6">
+                <a href="/" class="text-purple-400 hover:text-purple-300">New Paste</a>
+                <a href="/top" class="text-purple-400 hover:text-purple-300">Top Pastes</a>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-4xl mx-auto">
+            <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+                <!-- Paste Title -->
+                <div class="mb-4">
+                    <h2 id="pasteTitle" class="text-2xl font-semibold"></h2>
+                    <div class="text-gray-400 text-sm mt-1">
+                        <span id="pasteDate"></span>
+                    </div>
+                </div>
+
+                <!-- Paste Content -->
+                <div class="mb-6">
+                    <pre id="pasteContent" class="w-full bg-gray-700 rounded px-4 py-2 font-mono overflow-x-auto"></pre>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex justify-between items-center">
+                    <div class="space-x-4">
+                        <button onclick="copyToClipboard()" 
+                                class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
+                            <i class="fas fa-copy mr-2"></i>Copy
+                        </button>
+                        <button onclick="window.location.href='/'" 
+                                class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
+                            <i class="fas fa-plus mr-2"></i>New Paste
+                        </button>
+                    </div>
+                    <div>
+                        <span class="text-gray-400">
+                            <i class="fas fa-code mr-2"></i><span id="pasteSyntax">No Syntax</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center mt-12 text-gray-400">
+            <p>Made with <i class="fas fa-heart text-purple-500"></i> by Panda</p>
+        </footer>
+    </div>
+
+    <script>
+        // Function to get paste ID from URL
+        function getPasteId() {
+            const path = window.location.pathname;
+            return path.split('/').pop();
+        }
+
+        // Function to format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString();
+        }
+
+        // Function to copy content to clipboard
+        function copyToClipboard() {
+            const content = document.getElementById('pasteContent').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                showNotification('Copied to clipboard!');
+            }).catch(() => {
+                showNotification('Failed to copy to clipboard', 'error');
+            });
+        }
+
+        // Function to show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white success-message`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // Load paste content
+        async function loadPaste() {
+            try {
+                const pasteId = getPasteId();
+                const response = await fetch(`/api/paste/${pasteId}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load paste');
+                }
+
+                const paste = await response.json();
+                
+                document.getElementById('pasteTitle').textContent = paste.title;
+                document.getElementById('pasteContent').textContent = paste.content;
+                document.getElementById('pasteDate').textContent = formatDate(paste.timestamp);
+                document.getElementById('pasteSyntax').textContent = paste.syntax || 'No Syntax';
+                
+                // Update page title
+                document.title = `${paste.title} - PASTED.TO`;
+            } catch (error) {
+                console.error('Error loading paste:', error);
+                showNotification('Failed to load paste', 'error');
+            }
+        }
+
+        // Load paste on page load
+        window.addEventListener('load', loadPaste);
+    </script>
+</body>
+</html>
